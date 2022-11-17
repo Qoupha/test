@@ -1,25 +1,36 @@
-import logo from './logo.svg';
 import './App.css';
+import React, {useEffect, useState} from 'react';
+import axios from 'axios'
+import UserData from './components/UserData'
+import OnLoadingUserData from './components/OnLoadingUserData'
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const DataLoading = OnLoadingUserData(UserData);
+    const [appState, setAppState] = useState(
+        {
+            isLoading: true,
+            persons: null,
+        }
+    )
+
+    useEffect(() => {
+        axios.get('https://sowatrends.ru/trades/crypto')
+            .then(({data}) => {
+                setAppState({
+                    isLoading: false,
+                    persons: data
+                });
+            });
+    }, []);
+
+
+    return (
+        <div className="app">
+            <DataLoading {...appState} />
+        </div>
+    );
 }
 
+
 export default App;
+
